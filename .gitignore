@@ -1,7 +1,5 @@
 dist
 node_modules
-.npmrc
 *.log
 *.*sw*
 .vscode
-culacache

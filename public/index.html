@@ -7,12 +7,13 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
   <link rel="stylesheet" href="lib/codemirror.css">
   <script src="lib/codemirror.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
   <script src="lib/yaml/yaml.js"></script>
 </head>
 <body>
   <section class="section">
     <div class="container">
-      <a class="button is-pulled-right is-light">Run</a>
+      <a class="button is-pulled-right is-light" id="run-scenario">Run</a>
     </div>
   </section>
   <section class="section">
@@ -21,7 +22,9 @@
         <div class="column">
           <textarea id="editor" rows="75"></textarea>
         </div>
-        <div id="result" class="column has-background-white-ter"></div>
+        <div class="column has-background-white-ter">
+          <pre id="result"></pre>
+        </div>
       </div>
     </div>
   </section>
