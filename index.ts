@@ -13,8 +13,8 @@ const PORT = 9001;
 let child: childProcess.ChildProcess;
 
 enum ArtilleryStatus {
-  READY = 0,
-  RUNNING = 1,
+  READY = "READY",
+  RUNNING = "RUNNING",
 }
 
 app.use(express.static("public"));
@@ -36,6 +36,10 @@ app.post("/run", async (req, res) => {
         child.stdout.on("data", (output) => {
           io.emit("artilleryOutput", output.toString());
         });
+
+        child.stdout.on("end", () => {
+          io.emit("artilleryStatus", ArtilleryStatus.READY);
+        });
       }
     });
 
@@ -43,6 +47,18 @@ app.post("/run", async (req, res) => {
   } catch (err) {
     console.log("Error getting scenario", err);
   }
+});
+
+app.post("/stop", async (_, res) => {
+  if (child?.exitCode === null) {
+    console.log(`Terminating running child process: ${child.pid}`);
+
+    child.kill("SIGINT");
+  }
+
+  io.emit("artilleryStatus", ArtilleryStatus.READY);
+
+  res.sendStatus(204).end();
 });
 
 http.listen(process.env.PORT || PORT, () => {
