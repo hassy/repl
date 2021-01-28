@@ -3,13 +3,15 @@ import ioserver from "socket.io";
 import { createServer } from "http";
 import { promisify } from "util";
 import { createWriteStream } from "fs";
-import { exec, spawn } from "child_process";
+import * as childProcess from "child_process";
 
-const execPromise = promisify(exec);
+const execPromise = promisify(childProcess.exec);
 const app = express();
 const http = createServer(app);
 const io = new ioserver.Server(http);
 const PORT = 9001;
+
+let child: childProcess.ChildProcess;
 
 app.use(express.static("public"));
 
@@ -20,11 +22,17 @@ app.post("/run", async (req, res) => {
     const scenarioFile = createWriteStream(tempFile);
 
     req.pipe(scenarioFile).on("finish", () => {
-      const { stdout } = spawn("artillery", ["run", tempFile]);
+      if (child?.exitCode === null) {
+        child.kill("SIGINT");
+      }
 
-      stdout.on("data", (output) => {
-        io.emit("artilleryOutput", output.toString());
-      });
+      child = childProcess.spawn("artillery", ["run", tempFile]);
+
+      if (child.stdout) {
+        child.stdout.on("data", (output) => {
+          io.emit("artilleryOutput", output.toString());
+        });
+      }
     });
 
     res.end();
@@ -34,5 +42,5 @@ app.post("/run", async (req, res) => {
 });
 
 http.listen(process.env.PORT || PORT, () => {
-  console.log(`server listening on port ${PORT}`);
+  console.log(`Server listening on port ${PORT}`);
 });

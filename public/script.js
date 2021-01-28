@@ -13,11 +13,10 @@ document
     evt.preventDefault();
     resultElement.innerText = "";
 
-    await sendScenario(editor.getValue());
+    await submitScenario(editor.getValue());
   });
 
-async function sendScenario(value) {
-  console.log(value);
+async function submitScenario(value) {
   try {
     await fetch("/run", {
       method: "POST",
