@@ -11,12 +11,35 @@
   <script src="lib/yaml/yaml.js"></script>
 </head>
 <body>
-  <section class="section">
-    <div class="container">
-      <a class="button is-pulled-right is-success" id="run-scenario">Run</a>
-      <a class="button is-pulled-right is-danger" style="display: none;" id="stop-scenario">Stop</a>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://artillery.io">
+        <img src="https://artillery.io/images/artillery-logo-square.png">
+      </a>
+      <section class="hero is-small">
+        <div class="hero-body">
+          <p class="title">
+            Artillery
+          </p>
+        </div>
+      </section>
     </div>
-  </section>
+
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="buttons">
+            <a class="button is-success is-primary" id="run-scenario">
+              <strong>Run</strong>
+            </a>
+            <a class="button is-danger is-primary" style="display: none;" id="stop-scenario">
+              <strong>Stop</strong>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
   <section class="section">
     <div class="container">
       <div class="columns">
