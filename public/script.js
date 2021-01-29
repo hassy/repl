@@ -11,15 +11,15 @@ const editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
 
 editor.setSize(null, 690);
 
-runScenarioButton.addEventListener("click", async (evt) => {
-  evt.preventDefault();
+async function runScenarioHandler(event) {
+  event.preventDefault();
   resultElement.innerText = "";
 
   await submitScenario(editor.getValue());
-});
+}
 
-stopScenarioButton.addEventListener("click", async (evt) => {
-  evt.preventDefault();
+async function stopScenarioHandler(event) {
+  event.preventDefault();
 
   try {
     await fetch("/stop", {
@@ -29,7 +29,7 @@ stopScenarioButton.addEventListener("click", async (evt) => {
   } catch (err) {
     console.log("Error stopping scenario", err);
   }
-});
+}
 
 async function submitScenario(value) {
   try {
@@ -45,6 +45,16 @@ async function submitScenario(value) {
     console.log("Error posting scenario", err);
   }
 }
+
+runScenarioButton.addEventListener("click", runScenarioHandler);
+
+stopScenarioButton.addEventListener("click", stopScenarioHandler);
+
+document.addEventListener("keydown", (event) => {
+  if (event.ctrlKey && event.key === "Enter") {
+    runScenarioHandler(event);
+  }
+});
 
 socket.on("artilleryOutput", (data) => {
   resultElement.innerText += data;
