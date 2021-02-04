@@ -24,8 +24,10 @@
   "homepage": "https://github.com/artilleryio/repl#readme",
   "dependencies": {
     "artillery": "^1.6.1",
+    "artillery-plugin-expect": "^1.3.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
+    "js-yaml": "^3.14.1",
     "socket.io": "^3.1.0",
     "tmp": "^0.2.1"
   },

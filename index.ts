@@ -2,8 +2,9 @@ import express from "express";
 import tmp from "tmp";
 import ioserver from "socket.io";
 import { createServer } from "http";
-import { createWriteStream } from "fs";
+import { createWriteStream, readFileSync } from "fs";
 import * as childProcess from "child_process";
+import * as Yaml from "js-yaml"
 
 const app = express();
 const http = createServer(app);
@@ -29,7 +30,28 @@ app.post("/run", async (req, res) => {
         child.kill("SIGINT");
       }
 
-      child = childProcess.spawn("artillery", ["run", tempFile.name]);
+      const extraArgs = [];
+      const overrides = {};
+
+      // TODO: YAML parse errors
+      const doc = Yaml.load(readFileSync(tempFile.name), 'utf8');
+
+      if(!doc.config.phases) {
+        overrides["config"] = {
+          "phases": [
+            {
+              "duration": 1,
+              "arrivalCount": 1
+            }
+          ],
+          "plugins": {"expect":{}}
+        };
+        extraArgs.push('-q');
+        extraArgs.push('--overrides');
+        extraArgs.push(JSON.stringify(overrides));
+      }
+
+      child = childProcess.spawn("artillery", extraArgs.concat(["run", tempFile.name]));
       io.emit("artilleryStatus", ArtilleryStatus.RUNNING);
 
       if (child.stdout) {
